@@ -1,0 +1,30 @@
+service: pg-save-info-serverless
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: ap-southeast-2
+  timeout: 30
+  environment:
+    ALLOWS_INSECURE_SSL_CERTIFICATES: true
+    DB_HOST: ${env:DB_HOST}
+    DB_PORT: ${env:DB_PORT}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_NAME: ${env:DB_NAME}
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+functions:
+  saveImageInfo:
+    handler: src/handler.saveImageInfo
+    events:
+      - http:
+          path: /images/info
+          method: POST
+          cors: true

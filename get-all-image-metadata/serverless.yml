@@ -1,0 +1,35 @@
+service: pg-get-all-image-metadata
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: ap-southeast-2
+  timeout: 30
+  environment:
+    ALLOWS_INSECURE_SSL_CERTIFICATES: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:Scan
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/ImageMetadata
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+functions:
+  getAllImageMetadata:
+    handler: src/handler.getAllImageMetadata
+    events:
+      - http:
+          path: /images/metadata
+          method: GET
+          cors: true

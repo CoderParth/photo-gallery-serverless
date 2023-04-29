@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+
+# AWS SAM build artifacts
+.sam/
+
+# Serverless Framework build artifacts
+.serverless/
+
+# Compiled output
+dist/
+
+# Local environment files
+.env
+
+# Miscellaneous
+.DS_Store
+*.log
+*.swp
+
+# Build artifacts
+.build/

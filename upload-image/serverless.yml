@@ -1,0 +1,37 @@
+service: pg-serverless-upload
+frameworkVersion: '3'
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: ap-southeast-2
+  timeout: 30
+  environment:
+    BUCKET_NAME: ${env:BUCKET_NAME}
+    ALLOWS_INSECURE_SSL_CERTIFICATES: true
+  # Set the binaryMediaTypes property of the API Gateway to treat all response types as binary data
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/images/*'
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+functions:
+  uploadImage:
+    handler: src/handler.uploadHandler
+    events:
+      - http:
+          path: /images/upload
+          method: POST
+          cors: true

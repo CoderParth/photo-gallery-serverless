@@ -1,0 +1,25 @@
+service: lambda-with-cors
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: ap-southeast-2
+  timeout: 30
+  environment:
+    ALLOWS_INSECURE_SSL_CERTIFICATES: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+functions:
+  hello:
+    handler: handler.handler
+    events:
+      - http:
+          path: /
+          method: any
+          cors: true

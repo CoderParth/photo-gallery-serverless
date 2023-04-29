@@ -1,0 +1,36 @@
+service: pg-get-cloud-metric-serverless
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: ap-southeast-2
+  timeout: 30
+  environment:
+    ALLOWS_INSECURE_SSL_CERTIFICATES: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - lambda:ListFunctions
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - cloudwatch:GetMetricData
+          Resource: "*"
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+functions:
+  getLambdaMetrics:
+    handler: src/handler.getMetrics
+    events:
+      - http:
+          path: /metrics
+          method: GET
+          cors: true
